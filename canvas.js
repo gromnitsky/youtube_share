@@ -35,7 +35,7 @@ class MyCanvas {
 
 	this.ctx.beginPath()
 	this.ctx.arc(x, y, r+10, rads(0), rads(360), false)
-	this.ctx.arc(x, y, r,    rads(0), rads(360), true)
+	this.ctx.arc(x, y, r,    rads(0), rads(360), true) // counterclockwise
 
 	// A |\
 	//   | \
@@ -83,12 +83,26 @@ class MyCanvas {
 }
 
 
-
 document.addEventListener('DOMContentLoaded', () => {
     let img = new Image()
     img.onload = function() {
 	let canvas = new MyCanvas(this)
 	canvas.inject_to('body')
+
+	this.node = document.createElement("img")
+//	console.log(canvas.node.toDataURL("image/jpeg", 0.76).length)
+	this.node.src = canvas.node.toDataURL("image/jpeg", 0.76)
+	document.body.appendChild(this.node)
     }
-    img.src = 'test/data/rowan-atkinson-parrot.jpg'
+    fetch('test/data/rowan-atkinson-parrot.jpg')
+	.then( r => {
+	    if (r.ok) return r.blob()
+	    throw new Error('failed to fetch a thumbnail')
+	})
+	.then( blob => {
+	    img.src = URL.createObjectURL(blob)
+	})
+	.catch( err => {
+	    console.log(`omglol: ${err.message}`)
+	})
 })

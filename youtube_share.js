@@ -88,5 +88,32 @@ let youtube_share = {};
 	}
     }
 
+    // https://www.youtube.com/watch?v=tTv5ckMe_2M
+    // https://youtu.be/tTv5ckMe_2M
+    // https://www.youtube.com/embed/tTv5ckMe_2M
+    //
+    // return a video id or null
+    let url_parse = function(str) {
+	let r
+	let url
+	try {
+	    url = new URL(str)
+	} catch (e) {
+	    return null
+	}
+	if (!url.host.match(/(youtube\.com|youtu\.be)/)) return null
+
+	if (url.pathname === '/watch') r = url.searchParams.get('v')
+	else if ( (r = url.pathname.match(/^\/embed\/([^\/]+)/))) r = r[1]
+	else r = url.pathname.slice(1)
+
+	if (!r) return null
+	r = r.replace(/\/+$/, '') // right trim '/'
+	if (r.match(/^[a-zA-Z0-9_-]+$/)) return r
+	return null
+    }
+
     exports.ImgSealer = ImgSealer
+    exports.url_parse = url_parse
+
 })(typeof exports === 'object' ? exports : youtube_share)

@@ -1,13 +1,12 @@
 {
-  "name": "youtube_share",
-  "private": true,
-  "version": "0.0.1",
-  "description": "An exotic way to share a youtube video w/o iframes",
-  "main": "youtube_share.js",
-  "author": "Alexander Gromnitsky",
-  "license": "MIT",
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "~3.2.0"
-  }
+    "name": "youtube_share",
+    "private": true,
+    "version": "0.0.1-see-ext-manifest.json",
+    "main": "youtube_share.js",
+    "author": "Alexander Gromnitsky",
+    "license": "MIT",
+    "devDependencies": {
+	"chai": "~3.5.0",
+	"mocha": "~3.2.0"
+    }
 }

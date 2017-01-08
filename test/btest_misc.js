@@ -17,5 +17,6 @@ suite('url_parse', function() {
 	assert.equal(up('http://youtu.be/tTv5ckMe_2M///'), 'tTv5ckMe_2M')
 	assert.equal(up('https://www.youtube.com/watch?huh=1&v=tTv5ckMe_2M'), 'tTv5ckMe_2M')
 	assert.equal(up('https://www.youtube.com/embed/tTv5ckMe_2M'), 'tTv5ckMe_2M')
+	assert.equal(up('https://m.youtube.com/watch?v=tTv5ckMe_2M'), 'tTv5ckMe_2M')
     })
 })

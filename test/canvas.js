@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let img = new Image()
     img.onload = function() {
 	let ims = new youtube_share.ImgSealer(this)
-	ims.inject_to('body')
+	ims.inject_to('#app')
 
 	let node = document.createElement("img")
 	node.src = ims.toBase64()
-	document.body.appendChild(node)
+	document.querySelector('#app').appendChild(node)
     }
     fetch('data/rowan-atkinson-parrot.jpg')
 	.then( r => {

@@ -1,0 +1,9 @@
+{
+    "youtube_frame": "https://i.ytimg.com/vi/%s/0.jpg",
+    "ihs": {
+	"imgur": {
+	    "url": "https://api.imgur.com/3/image.json",
+	    "client_id": "dc708f3823b7756"
+	}
+    }
+}

@@ -7,12 +7,16 @@
     "permissions": [
         "contextMenus",
 	"clipboardWrite",
-	"https://i.ytimg.com/"
+	"https://i.ytimg.com/",
+	"https://api.imgur.com/",
+
+	"http://localhost:3000/"
     ],
     "background": {
 	"persistent": false,
 	"scripts": [
 	    "youtube_share.js",
+	    "ihs.js",
 	    "event_page.js"
 	]
     }

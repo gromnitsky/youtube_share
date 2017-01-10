@@ -1,0 +1,9 @@
+{
+    "youtube_frame": "http://localhost:3000/",
+    "ihs": {
+	"imgur": {
+	    "url": "http://localhost:3000/3/image.json",
+	    "client_id": "omglol"
+	}
+    }
+}

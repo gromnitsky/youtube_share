@@ -40,6 +40,23 @@ let listen = function(srv) {
 
 let server = http.createServer(function(req, res) {
     request_had_error = false
+    res.setHeader('Access-Control-Allow-Origin', '*')
+
+    // preflighted requests
+    if (req.method === "OPTIONS") {
+	res.statusCode = 200
+	res.setHeader('Access-Control-Allow-Headers', 'Authorization')
+	res.end()
+	return
+    }
+
+    if (req.method === "GET") {
+	res.writeHead(200, {'Content-Type': 'image/jpeg'})
+	let stream = fs.createReadStream(__dirname + '/data/rowan-atkinson-parrot.jpg')
+	stream.pipe(res);
+	return
+    }
+
     if (req.method !== "POST") {
 	errx(res, 501, "not implemented")
 	return
@@ -50,8 +67,6 @@ let server = http.createServer(function(req, res) {
 	errx(res, 404, "not found")
 	return
     }
-
-    res.setHeader('Access-Control-Allow-Origin', '*')
 
     // process uploads
     let form = new multiparty.Form()

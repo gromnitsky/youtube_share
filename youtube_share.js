@@ -81,6 +81,14 @@ let youtube_share = {};
 	    return this.node.toDataURL("image/jpeg", q)
 	}
 
+	toBlob(q = 0.76) {
+	    return new Promise( (resolve, _reject) => {
+		this.node.toBlob( blob => {
+		    resolve(blob)
+		}, "image/jpeg", q)
+	    })
+	}
+
 	inject_to(query) {
 	    let cont = document.querySelector(query)
 	    cont.innerHTML = ''

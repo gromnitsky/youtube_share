@@ -1,0 +1,130 @@
+#!/usr/bin/env node
+
+'use strict';
+
+let http = require('http')
+let url = require('url')
+let util = require('util')
+let fs = require('fs')
+
+let multiparty = require('multiparty')
+
+// a flag to prevent a double erroring during a request
+let request_had_error = false
+
+let log =  console.error.bind(console, 'imgur-server-stub:')
+
+let errx = function(res, code, msg) {
+    if (!request_had_error) {
+	res.setHeader('Access-Control-Allow-Origin', '*')
+	res.statusCode = code
+	res.statusMessage = msg
+	res.end()
+    }
+    log(msg instanceof Error ? msg : `ERROR: ${msg}`)
+    request_had_error = true
+}
+
+let listen = function(srv) {
+    srv.listen(process.env.PORT || 3000,
+	       function() {
+		   log('Listening: http://' +
+		       this.address().address +
+		       (this.address().port === 80 ?
+			"" : ":" + this.address().port))
+	       })
+}
+
+
+// Main
+
+let server = http.createServer(function(req, res) {
+    request_had_error = false
+    if (req.method !== "POST") {
+	errx(res, 501, "not implemented")
+	return
+    }
+
+    let purl = url.parse(req.url, true)
+    if (purl.path !== '/3/image.json') {
+	errx(res, 404, "not found")
+	return
+    }
+
+    res.setHeader('Access-Control-Allow-Origin', '*')
+
+    // process uploads
+    let form = new multiparty.Form()
+    form.parse(req, (err, fields, files) => {
+	if (err) {
+	    errx(res, 500, err)
+	    return
+	}
+
+	if (!req.headers.authorization
+	    || !req.headers.authorization.match(/^client-id [a-zA-Z0-9]+/i)) {
+	    errx(res, 401, 'Unauthorized')
+	    return
+	}
+	if (!files.image) {
+	    errx(res, 400, 'image key is requred')
+	    return
+	}
+
+	for (let idx of files.image) {
+	    if (idx.headers['content-type'] !== "image/jpeg") {
+		errx(res, 500, 'Could not process upload!')
+		return
+	    }
+	    fs.unlinkSync(idx.path)
+	}
+
+	res.setHeader('Content-Type', 'application/json')
+	res.statusCode = 200
+	res.end(JSON.stringify({
+	    data: {
+		"_multiparty": {fields, files},
+
+		// curl -v -H 'Authorization: Client-ID dc708f3823b7756' -F image=@rowan-atkinson-parrot.ys.jpg https://api.imgur.com/3/image.json
+		"id": "rowan-atkinson-parrot.ys",
+		"title": null,
+		"description": null,
+		"datetime": 1484068035,
+		"type": "image/jpeg",
+		"animated": false,
+		"width": 480,
+		"height": 360,
+		"size": 15330,
+		"views": 0,
+		"bandwidth": 0,
+		"vote": null,
+		"favorite": false,
+		"nsfw": null,
+		"section": null,
+		"account_url": null,
+		"account_id": 0,
+		"is_ad": false,
+		"in_gallery": false,
+		"deletehash": "YTxyUTBAwGCixGL",
+		"name": "",
+		"link": "http://localhost/~alex/lib/software/example/js/youtube-share/test/data/rowan-atkinson-parrot.ys.jpg"
+
+	    },
+	    success : true,
+	    status: 200
+	}, null, 2))
+    })
+})
+
+server.on('error', function(err) {
+    log(err)
+})
+
+server.on('clientError', function(err, socket) {
+    socket.write('HTTP/1.1 400 Bad Request\r\n')
+    socket.write('Content-Length: 0\r\n')
+    socket.write('Access-Control-Allow-Origin: *\r\n')
+    socket.end('\r\n')
+})
+
+listen(server)

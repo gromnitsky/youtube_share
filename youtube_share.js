@@ -77,8 +77,8 @@ let youtube_share = {};
 	    this.ctx.restore()
 	}
 
-	toBase64() {
-	    return this.node.toDataURL("image/jpeg", 0.76)
+	toBase64(q = 0.76) {
+	    return this.node.toDataURL("image/jpeg", q)
 	}
 
 	inject_to(query) {

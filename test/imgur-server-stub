@@ -6,6 +6,8 @@ let http = require('http')
 let url = require('url')
 let util = require('util')
 let fs = require('fs')
+let cp = require('child_process')
+let os = require('os')
 
 let multiparty = require('multiparty')
 
@@ -38,6 +40,7 @@ let listen = function(srv) {
 
 // Main
 
+let tmpdir = __dirname + '/.tmp'
 let server = http.createServer(function(req, res) {
     request_had_error = false
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -69,7 +72,8 @@ let server = http.createServer(function(req, res) {
     }
 
     // process uploads
-    let form = new multiparty.Form()
+    try { fs.mkdirSync(tmpdir) } catch (e) { /* empty */ }
+    let form = new multiparty.Form({'uploadDir': tmpdir})
     form.parse(req, (err, fields, files) => {
 	if (err) {
 	    errx(res, 500, err)
@@ -86,12 +90,9 @@ let server = http.createServer(function(req, res) {
 	    return
 	}
 
-	for (let idx of files.image) {
-	    if (idx.headers['content-type'] !== "image/jpeg") {
-		errx(res, 500, 'Could not process upload!')
-		return
-	    }
-	    fs.unlinkSync(idx.path)
+	if (files.image[0].headers['content-type'] !== "image/jpeg") {
+	    errx(res, 500, 'Could not process upload!')
+	    return
 	}
 
 	res.setHeader('Content-Type', 'application/json')
@@ -100,8 +101,8 @@ let server = http.createServer(function(req, res) {
 	    data: {
 		"_multiparty": {fields, files},
 
-		// curl -v -H 'Authorization: Client-ID dc708f3823b7756' -F image=@rowan-atkinson-parrot.ys.jpg https://api.imgur.com/3/image.json
-		"id": "rowan-atkinson-parrot.ys",
+		// curl -v -H 'Authorization: Client-ID dc708f3823b7756' -F image=@file.jpg https://api.imgur.com/3/image.json
+		"id": "who cares",
 		"title": null,
 		"description": null,
 		"datetime": 1484068035,
@@ -109,7 +110,7 @@ let server = http.createServer(function(req, res) {
 		"animated": false,
 		"width": 480,
 		"height": 360,
-		"size": 15330,
+		"size": files.image[0].size,
 		"views": 0,
 		"bandwidth": 0,
 		"vote": null,
@@ -122,8 +123,7 @@ let server = http.createServer(function(req, res) {
 		"in_gallery": false,
 		"deletehash": "YTxyUTBAwGCixGL",
 		"name": "",
-		"link": "http://localhost/~alex/lib/software/example/js/youtube-share/test/data/rowan-atkinson-parrot.ys.jpg"
-
+		"link": 'http://localhost' + files.image[0].path.replace(os.homedir(), `/~${os.userInfo().username}`)
 	    },
 	    success : true,
 	    status: 200
@@ -140,6 +140,14 @@ server.on('clientError', function(err, socket) {
     socket.write('Content-Length: 0\r\n')
     socket.write('Access-Control-Allow-Origin: *\r\n')
     socket.end('\r\n')
+})
+
+// remove the tmp upload dir
+process.on('SIGINT', () => {
+    let cmd = `rm -rf ${tmpdir}`
+    console.error(cmd)
+    cp.execSync(cmd)
+    process.exit(1)
 })
 
 listen(server)

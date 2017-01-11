@@ -8,7 +8,7 @@ let ihs = {};
     let blob_upload = function(blob, url_post, auth_id) {
 	let fd = new FormData()
 	fd.append('type', 'file')
-	fd.append('image', blob)
+	fd.append('image', blob, "file.jpg")
 
 	return fetch(url_post, {
 	    method: 'POST',

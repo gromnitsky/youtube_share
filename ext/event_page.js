@@ -1,6 +1,5 @@
 /* globals chrome, youtube_share, ihs */
 
-let conf = null
 let log =  console.log.bind(console, 'youtube_share:')
 
 let clipboard_write = function(str) {
@@ -10,15 +9,9 @@ let clipboard_write = function(str) {
     document.execCommand("copy", false, null)
 }
 
-let link_create = function(vid) {
-    if (!conf) {
-	log('retry in 3 sec')
-	window.setTimeout(() => link_create(vid), 3000)
-	return
-    }
-
-    let url_thumbnail = conf.youtube_frame.replace('%s', vid)
-    let ihs_provider = conf.ihs.imgur
+let link_create = function(cfg, vid) {
+    let url_thumbnail = cfg.youtube_frame.replace('%s', vid)
+    let ihs_provider = cfg.ihs.imgur
 
     let img = new Image()
     img.onload = function() {
@@ -51,31 +44,36 @@ let link_create = function(vid) {
 }
 
 let click = function(info) {
-    let str = info.linkUrl || info.selectionText || null
-    let vid = youtube_share.url_parse(str)
-    if (!vid) {
-	alert('Failed to extract a video id')
-	return
-    }
-    link_create(vid)
+    conf().then( cfg => {
+        let str = info.linkUrl || info.selectionText || null
+	let vid = youtube_share.url_parse(str)
+	if (!vid) {
+	    alert('Failed to extract a video id')
+	    return
+	}
+	link_create(cfg, vid)
+    })
 }
 
-let main = function(info) {
-    let config = info.installType === 'development' ? 'conf.debug.json' : 'conf.json'
-    log(`wake up; config=${config}`)
+let extinfo = function() {
+    return new Promise( (resolve, _reject) => {
+	chrome.management.getSelf( data => {
+	    resolve(data)
+	})
+    })
+}
 
-    fetch(config).then( res => res.json()).then( json => {
-	conf = json
-	// a stage area for clipboard
-	document.body.appendChild(document.createElement("textarea"))
-
-    }).catch( err => {
-	console.log(err)
+let conf = function() {
+    return extinfo().then( data => {
+	return data.installType === 'development' ? 'conf.debug.json' : 'conf.json'
+    }).then( file => {
+	return fetch(file).then( res => res.json())
     })
 }
 
 chrome.contextMenus.onClicked.addListener(click)
-chrome.management.getSelf(main)
+// a stage area for clipboard
+document.body.appendChild(document.createElement("textarea"))
 
 // the callback shouldn't run each time chrome wakes up the extension
 chrome.runtime.onInstalled.addListener(() => {

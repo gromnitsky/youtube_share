@@ -1,6 +1,7 @@
 /* globals chrome, youtube_share, ihs */
 
-let conf = {}
+let conf = null
+let log =  console.log.bind(console, 'youtube_share:')
 
 let clipboard_write = function(str) {
     let node = document.querySelector('textarea')
@@ -10,6 +11,12 @@ let clipboard_write = function(str) {
 }
 
 let link_create = function(vid) {
+    if (!conf) {
+	log('retry in 3 sec')
+	window.setTimeout(() => link_create(vid), 3000)
+	return
+    }
+
     let url_thumbnail = conf.youtube_frame.replace('%s', vid)
     let ihs_provider = conf.ihs.imgur
 
@@ -55,11 +62,10 @@ let click = function(info) {
 
 let main = function(info) {
     let config = info.installType === 'development' ? 'conf.debug.json' : 'conf.json'
-    console.log(`youtube_share: wake up; config=${config}`)
+    log(`wake up; config=${config}`)
 
     fetch(config).then( res => res.json()).then( json => {
 	conf = json
-	chrome.contextMenus.onClicked.addListener(click)
 	// a stage area for clipboard
 	document.body.appendChild(document.createElement("textarea"))
 
@@ -68,12 +74,12 @@ let main = function(info) {
     })
 }
 
-
+chrome.contextMenus.onClicked.addListener(click)
 chrome.management.getSelf(main)
 
 // the callback shouldn't run each time chrome wakes up the extension
 chrome.runtime.onInstalled.addListener(() => {
-    console.log('youtube_share: creating a menu item')
+    log('creating a menu item')
     chrome.contextMenus.create({
 	"id": "0",
 	"title": "youtube_share",

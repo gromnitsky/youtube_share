@@ -16,7 +16,6 @@
 	"persistent": false,
 	"scripts": [
 	    "youtube_share.js",
-	    "ihs.js",
 	    "event_page.js"
 	]
     }

@@ -1,4 +1,4 @@
-/* globals chrome, youtube_share, ihs */
+/* globals chrome, youtube_share */
 
 let log =  console.log.bind(console, 'youtube_share:')
 
@@ -10,16 +10,12 @@ let clipboard_write = function(str) {
 }
 
 let link_create = function(cfg, vid) {
-    let url_thumbnail = cfg.youtube_frame.replace('%s', vid)
-    let ihs_provider = cfg.ihs.imgur
-
     let img = new Image()
     img.onload = function() {
 	let imgsealer = new youtube_share.ImgSealer(this)
 
 	imgsealer.toBlob().then( blob => {
-	    return ihs.blob_upload(blob,
-				   ihs_provider.url, ihs_provider.client_id)
+	    return youtube_share.upload(blob, cfg.ihs.imgur)
 	}).then( link => {
 	    let r = `<a href='https://www.youtube.com/watch?v=${vid}' target='_blank'><img src='${link}' alt='Opens a Youtube page'></a>`
 
@@ -30,6 +26,8 @@ let link_create = function(cfg, vid) {
 	})
 
     }
+
+    let url_thumbnail = cfg.youtube_frame.replace('%s', vid)
     fetch(url_thumbnail)
 	.then( r => {
 	    if (r.ok) return r.blob()

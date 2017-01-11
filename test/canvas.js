@@ -1,4 +1,4 @@
-/* global youtube_share, ihs */
+/* global youtube_share */
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,8 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	ims.inject_to('#app')
 
 	ims.toBlob().then( blob => {
-	    return ihs.blob_upload(blob, 'http://localhost:3000/3/image.json',
-				   'omglol')
+	    return youtube_share
+		.upload(blob, {
+		    url: 'http://localhost:3000/3/image.json',
+		    client_id: 'omglol'
+		})
 	}).then( link => {
 	    let node = document.createElement("img")
 	    node.src = link

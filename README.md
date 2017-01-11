@@ -1,5 +1,7 @@
 # youtube_share
 
+(Download the Chrome extension [here](http://gromnitsky.users.sourceforge.net/js/chrome/).)
+
 Usually you "share" a youtube vid via copying an iframe tag that
 Youtube provides for you.
 
@@ -14,15 +16,13 @@ to a youtube page:
 <img src='http://i.imgur.com/H7HzKEO.jpg'>
 </a>
 
-The example above is rendered from:
+The example above is rendered from an obvious:
 
 ~~~
 <a href='https://www.youtube.com/watch?v=tTv5ckMe_2M' target='_blank'>
-<img src='data:image/jpeg;base64,/...'>
+<img src='http://i.imgur.com/H7HzKEO.jpg'>
 </a>
 ~~~
-
-(In reality it's a one-liner, 33,772 KB long)
 
 
 ## How it works
@@ -36,9 +36,37 @@ It
 1. Fetches the 1st video frame.
 2. Creates an in-memory canvas, puts the image onto it, draws the text
    w/ a play "button" next to it.
-3. Exports the canvas to jpeg in base64.
-4. Constructs &lt;a&gt;+&lt;img&gt;
-5. Copies the result into clipboard.
+3. Exports the canvas to jpeg.
+4. Uploads the jpeg to imgur.
+5. Constructs &lt;a&gt;+&lt;img&gt;
+6. Copies the result into clipboard.
+
+N.B. Don't try to run the extension in developer mode as an "unpacked
+extension"--you'll get an ill version that requires additional staff
+running on your machine (like `test/imgur-server-stub`).
+
+
+## Making a custom crx
+
+1. Generate a private RSA key:
+
+	`openssl genrsa -out private.pem 1024`
+
+2. `make`
+
+& you should get `_build/youtube_share-x.y.z.crx`.
+
+
+## Bugs
+
+* A user doesn't see any progress of downloading/uploading ops (which
+  can be show (~5s), for imgur is slow), just a confirmation in the
+  end.
+
+* If you encouter "Failed to fetch" alert, it means imgur has reset
+  the connection. Register your own client_id at imgur & insert in
+  `ext/conf.json` & maybe that'll help (it won't). The existing
+  client_id I've just found on the internets.
 
 
 ## License

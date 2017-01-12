@@ -1,12 +1,22 @@
-src := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+.DELETE_ON_ERROR:
+
 out := _build
-proj.name := youtube_share
-proj.version := $(shell json < ext/manifest.json version)
-pkg.name := $(proj.name)-$(proj.version)
+pkg.name := youtube_share-$(shell json < ext/manifest.json version)
 
 .PHONY: crx
 crx: $(out)/$(pkg.name).crx
 
+ext.src := $(wildcard ext/*)
+
+$(out)/$(pkg.name).zip: $(ext.src)
+	@mkdir -p $(out)
+	cd $(dir $<) && zip -qr $(CURDIR)/$@ *
+
+%.crx: %.zip private.pem
+	./zip2crx.sh $< private.pem
+
+
+# for tests
 
 .PHONY: server
 server: kill
@@ -15,18 +25,3 @@ server: kill
 .PHONY: kill
 kill:
 	-pkill -f 'node test/imgur-server-stub'
-
-$(out)/$(pkg.name).zip:
-	rm -f $@
-	mkdir -p $(out)
-	rm -f $(out)/*
-	cp ext/* $(out)
-	cd $(out) && zip -qr $(CURDIR)/$@ *
-
-%.crx: %.zip private.pem
-	rm -f $@
-	cd $(dir $@) && $(src)/zip2crx.sh $< $(src)/private.pem
-
-.PHONY: clean
-clean:
-	rm -rf $(out)

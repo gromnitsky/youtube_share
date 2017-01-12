@@ -50,21 +50,24 @@ running on your machine (like `test/imgur-server-stub`).
 
 1. Generate a private RSA key:
 
-	`openssl genrsa -out private.pem 1024`
+	`$ openssl genrsa -out private.pem 1024`
 
-2. `make`
+2. Compile:
+
+	~~~
+	$ npm i
+	$ make crx
+	~~~
 
 & you should get `_build/youtube_share-x.y.z.crx`.
 
 
 ## Bugs
 
-* A user doesn't see any progress of downloading/uploading ops (which
-  can be show (~5s), for imgur is slow), just a confirmation in the
-  end.
+* Alerts should be replaced with something less annoying.
 
 * If you encouter "Failed to fetch" alert, it means imgur has reset
-  the connection. Register your own client_id at imgur & insert in
+  the connection. Register your own client_id at imgur & insert it in
   `ext/conf.json` & maybe that'll help (it won't). The existing
   client_id I've just found on the internets.
 

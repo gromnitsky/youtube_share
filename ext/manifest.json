@@ -18,5 +18,10 @@
 	    "youtube_share.js",
 	    "event_page.js"
 	]
-    }
+    },
+    "content_scripts": [{
+	"matches": ["<all_urls>"],
+	"css": ["vendor/nprogress/nprogress.css"],
+	"js": ["vendor/nprogress/nprogress.js", "content_script.js"]
+    }]
 }

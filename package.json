@@ -9,5 +9,8 @@
 	"chai": "~3.5.0",
 	"mocha": "~3.2.0",
 	"multiparty": "~4.1.2"
+    },
+    "dependencies": {
+	"nprogress": "~0.2.0"
     }
 }

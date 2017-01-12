@@ -9,8 +9,21 @@ let clipboard_write = function(str) {
     document.execCommand("copy", false, null)
 }
 
-let link_create = function(cfg, vid) {
+let progress_update = function(tab_id, op) {
+    chrome.tabs.sendMessage(tab_id, {
+	name: 'progress',
+	op
+    })
+}
+
+let msg = function(text) {
+    setTimeout( () => alert(text), 1)
+}
+
+let link_create = function(cfg, tab_id, vid) {
     let img = new Image()
+    progress_update(tab_id, 'inc')
+
     img.onload = function() {
 	let imgsealer = new youtube_share.ImgSealer(this)
 
@@ -20,14 +33,19 @@ let link_create = function(cfg, vid) {
 	    let r = `<a href='https://www.youtube.com/watch?v=${vid}' target='_blank'><img src='${link}' alt='Opens a Youtube page'></a>`
 
 	    clipboard_write(r)
-	    alert(`A text for a Youtube share is copied into the clipboard`)
+	    progress_update(tab_id, 'done')
+
+	    msg('A text for a Youtube share is copied into the clipboard')
+
 	}).catch( err => {
-	    alert(err)
+	    progress_update(tab_id, 'done')
+	    msg(err)
 	})
 
     }
 
     let url_thumbnail = cfg.youtube_frame.replace('%s', vid)
+    progress_update(tab_id, 'inc')
     fetch(url_thumbnail)
 	.then( r => {
 	    if (r.ok) return r.blob()
@@ -35,13 +53,15 @@ let link_create = function(cfg, vid) {
 	})
 	.then( blob => {
 	    img.src = URL.createObjectURL(blob)
-	})
-	.catch( err => {
-	    alert(err)
+	    progress_update(tab_id, 'inc')
+
+	}).catch( err => {
+	    progress_update(tab_id, 'done')
+	    msg(err)
 	})
 }
 
-let click = function(info) {
+let click = function(info, tab) {
     conf().then( cfg => {
         let str = info.linkUrl || info.selectionText || null
 	let vid = youtube_share.url_parse(str)
@@ -49,7 +69,7 @@ let click = function(info) {
 	    alert('Failed to extract a video id')
 	    return
 	}
-	link_create(cfg, vid)
+	link_create(cfg, tab.id, vid)
     })
 }
 

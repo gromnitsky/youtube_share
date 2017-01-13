@@ -53,3 +53,10 @@ kill:
 .PHONY: clean
 clean:
 	rm -rf $(out) ext/vendor
+
+
+# sf
+
+.PHONY: upload
+upload:
+	scp $(out)/$(pkg.name).crx gromnitsky@web.sourceforge.net:/home/user-web/gromnitsky/htdocs/js/chrome/

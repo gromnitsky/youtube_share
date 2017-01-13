@@ -64,10 +64,8 @@ running on your machine (like `test/imgur-server-stub`).
 
 ## Bugs
 
-* Alerts should be replaced with something less annoying.
-
-* If you encouter "Failed to fetch" alert, it means imgur has reset
-  the connection. Register your own client_id at imgur & insert it in
+* If you encouter "Failed to fetch" msg, it means imgur has reset the
+  connection. Register your own client_id at imgur & insert it in
   `ext/conf.json` & maybe that'll help (it won't). The existing
   client_id I've just found on the internets.
 

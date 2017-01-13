@@ -16,8 +16,11 @@ let progress_update = function(tab_id, op) {
     })
 }
 
-let msg = function(text) {
-    setTimeout( () => alert(text), 1)
+let myalert = function(tab_id, text) {
+    chrome.tabs.sendMessage(tab_id, {
+	name: 'alert',
+	text
+    })
 }
 
 let link_create = function(cfg, tab_id, vid) {
@@ -35,11 +38,11 @@ let link_create = function(cfg, tab_id, vid) {
 	    clipboard_write(r)
 	    progress_update(tab_id, 'done')
 
-	    msg('A text for a Youtube share is copied into the clipboard')
+	    myalert(tab_id, 'A text for a Youtube share is copied into the clipboard')
 
 	}).catch( err => {
 	    progress_update(tab_id, 'done')
-	    msg(err)
+	    myalert(tab_id, err.message)
 	})
 
     }
@@ -57,7 +60,7 @@ let link_create = function(cfg, tab_id, vid) {
 
 	}).catch( err => {
 	    progress_update(tab_id, 'done')
-	    msg(err)
+	    myalert(tab_id, err.message)
 	})
 }
 
@@ -66,7 +69,7 @@ let click = function(info, tab) {
         let str = info.linkUrl || info.selectionText || null
 	let vid = youtube_share.url_parse(str)
 	if (!vid) {
-	    alert('Failed to extract a video id')
+	    myalert(tab.id, 'Failed to extract a video id')
 	    return
 	}
 	link_create(cfg, tab.id, vid)

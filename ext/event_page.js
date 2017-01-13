@@ -23,6 +23,11 @@ let myalert = function(tab_id, text) {
     })
 }
 
+let notify = function(text) {
+    let n = new Notification(text)
+    setTimeout(n.close.bind(n), 3000)
+}
+
 let link_create = function(cfg, tab_id, vid) {
     let img = new Image()
     progress_update(tab_id, 'inc')
@@ -38,7 +43,7 @@ let link_create = function(cfg, tab_id, vid) {
 	    clipboard_write(r)
 	    progress_update(tab_id, 'done')
 
-	    myalert(tab_id, 'A text for a Youtube share is copied into the clipboard')
+	    notify(`A Youtube share (${vid}) is copied into the clipboard`)
 
 	}).catch( err => {
 	    progress_update(tab_id, 'done')
@@ -52,7 +57,7 @@ let link_create = function(cfg, tab_id, vid) {
     fetch(url_thumbnail)
 	.then( r => {
 	    if (r.ok) return r.blob()
-	    throw new Error('failed to fetch a thumbnail')
+	    throw new Error('Failed to fetch a thumbnail')
 	})
 	.then( blob => {
 	    img.src = URL.createObjectURL(blob)

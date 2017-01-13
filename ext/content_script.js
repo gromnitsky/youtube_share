@@ -14,7 +14,3 @@ chrome.extension.onMessage.addListener( req => {
 	throw new Error(`unknown message: ${req.name}`)
     }
 })
-
-
-// Main (DOM should be loaded by now)
-dialog.init()

@@ -11,7 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	    return youtube_share
 		.upload(blob, {
 		    url: 'http://localhost:3000/3/image.json',
-		    client_id: 'omglol'
+		    "post_file": "image",
+		    "headers": {
+			"Authorization" : "Client-ID omglol"
+		    },
+		    "result": "data.link"
 		})
 	}).then( link => {
 	    let node = document.createElement("img")

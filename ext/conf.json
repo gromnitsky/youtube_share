@@ -1,9 +1,22 @@
 {
     "youtube_frame": "https://i.ytimg.com/vi/%s/0.jpg",
+    "ihs_default": "ultraimg",
     "ihs": {
 	"imgur": {
 	    "url": "https://api.imgur.com/3/image.json",
-	    "client_id": "dc708f3823b7756"
+	    "post_file": "image",
+	    "headers": {
+		"Authorization" : "Client-ID dc708f3823b7756"
+	    },
+	    "result": "data.link"
+	},
+	"ultraimg": {
+	    "url": "http://www.ultraimg.com/api/1/upload",
+	    "post_file": "source",
+	    "params": {
+		"key": "3374fa58c672fcaad8dab979f7687397"
+	    },
+	    "result": "image.url"
 	}
     }
 }

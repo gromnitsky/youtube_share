@@ -36,7 +36,7 @@ let link_create = function(cfg, tab_id, vid) {
 	let imgsealer = new youtube_share.ImgSealer(this)
 
 	imgsealer.toBlob().then( blob => {
-	    return youtube_share.upload(blob, cfg.ihs.imgur)
+	    return youtube_share.upload(blob, cfg.ihs[cfg.ihs_default])
 	}).then( link => {
 	    let r = `<a href='https://www.youtube.com/watch?v=${vid}' target='_blank'><img src='${link}' alt='Opens a Youtube page'></a>`
 

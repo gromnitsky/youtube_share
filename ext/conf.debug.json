@@ -1,9 +1,22 @@
 {
     "youtube_frame": "http://localhost:3000/",
+    "ihs_default": "ultraimg",
     "ihs": {
 	"imgur": {
 	    "url": "http://localhost:3000/3/image.json",
-	    "client_id": "omglol"
+	    "post_file": "image",
+	    "headers": {
+		"Authorization" : "Client-ID omglol"
+	    },
+	    "result": "data.link"
+	},
+	"ultraimg": {
+	    "url": "http://www.ultraimg.com/api/1/upload",
+	    "post_file": "source",
+	    "params": {
+		"key": "3374fa58c672fcaad8dab979f7687397"
+	    },
+	    "result": "image.url"
 	}
     }
 }

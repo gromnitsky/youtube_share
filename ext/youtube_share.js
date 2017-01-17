@@ -121,29 +121,50 @@ let youtube_share = {};
 	return null
     }
 
-    // for an Imgur-like service
+    class UploadError extends Error {
+	constructor(msg) {
+	    super(msg)
+	    this.message = `upload: ${msg}`
+	    this.name = 'UploadError'
+	}
+    }
+
     let upload = function(blob, ihs) {
 	let fd = new FormData()
 	fd.append('type', 'file')
-	fd.append('image', blob, "file.jpg")
+	fd.append(ihs.post_file, blob, "file.jpg")
+	if (ihs.params) {
+	    for (let key in ihs.params) fd.append(key, ihs.params[key])
+	}
+	let headers = {}
+	if (ihs.headers) {
+	    for (let key in ihs.headers) headers[key] = ihs.headers[key]
+	}
+
+	let resolve = function(obj, path) {
+	    return path.split('.').reduce( (prev, curr) => {
+		return prev ? prev[curr] : undefined
+	    }, obj)
+	}
 
 	return fetch(ihs.url, {
 	    method: 'POST',
-	    headers: { Authorization: `Client-ID ${ihs.client_id}` },
+	    headers,
 	    body: fd
 	}).then( res => {
-	    if (res.status !== 200) throw new Error(`status code: ${res.status}`)
+	    if (res.status !== 200)
+		throw new UploadError(`HTTP status: ${res.status}`)
 	    return res.json()
 	}).then( json => {
-	    if (!json.data || !json.data.link)
-		throw new Error('unknown json data in the response')
-
-	    return json.data.link
+	    let r = resolve(json, ihs.result)
+	    if (!r) throw new UploadError('invalid json')
+	    return r
 	})
     }
 
     exports.ImgSealer = ImgSealer
     exports.url_parse = url_parse
+    exports.UploadError = UploadError
     exports.upload = upload
 
 })(typeof exports === 'object' ? exports : youtube_share)

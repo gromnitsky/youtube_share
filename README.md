@@ -37,7 +37,7 @@ It
 2. Creates an in-memory canvas, puts the image onto it, draws the text
    w/ a play "button" next to it.
 3. Exports the canvas to jpeg.
-4. Uploads the jpeg to imgur.
+4. Uploads the jpeg to ~~imgur~~ ultraimg.
 5. Constructs &lt;a&gt;+&lt;img&gt;
 6. Copies the result into clipboard.
 
@@ -60,14 +60,6 @@ running on your machine (like `test/imgur-server-stub`).
 	~~~
 
 & you should get `_build/youtube_share-x.y.z.crx`.
-
-
-## Bugs
-
-* If you encouter "Failed to fetch" msg, it means imgur has reset the
-  connection. Register your own client_id at imgur & insert it in
-  `ext/conf.json` & maybe that'll help (it won't). The existing
-  client_id I've just found on the internets.
 
 
 ## License

@@ -1,6 +1,6 @@
 {
     "youtube_frame": "http://localhost:3000/",
-    "ihs_default": "ultraimg",
+    "ihs_default": "imgur",
     "ihs": {
 	"imgur": {
 	    "url": "http://localhost:3000/3/image.json",

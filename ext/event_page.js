@@ -91,6 +91,7 @@ let extinfo = function() {
 
 let conf = function() {
     return extinfo().then( data => {
+//	return 'conf.json'
 	return data.installType === 'development' ? 'conf.debug.json' : 'conf.json'
     }).then( file => {
 	return fetch(file).then( res => res.json())

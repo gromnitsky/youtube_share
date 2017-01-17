@@ -37,6 +37,7 @@ let youtube_share = {};
 
 	    this.ctx.beginPath()
 	    this.ctx.arc(x, y, r+10, rads(0), rads(360), false)
+	    this.ctx.moveTo(x+r, y)
 	    this.ctx.arc(x, y, r,    rads(0), rads(360), true) // counterclockwise
 
 	    // A |\

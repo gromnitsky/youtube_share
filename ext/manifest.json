@@ -2,16 +2,12 @@
     "manifest_version": 2,
     "name": "youtube_share",
     "description": "An exotic way to share a youtube video w/o iframes",
-    "version": "0.0.2",
+    "version": "0.0.3",
 
     "permissions": [
         "contextMenus",
 	"clipboardWrite",
-	"notifications",
-	"https://i.ytimg.com/",
-	"https://api.imgur.com/",
-
-	"http://localhost:3000/"
+	"notifications"
     ],
     "background": {
 	"persistent": false,

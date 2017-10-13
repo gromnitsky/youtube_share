@@ -11,7 +11,7 @@
 	    "result": "data.link"
 	},
 	"ultraimg": {
-	    "url": "http://www.ultraimg.com/api/1/upload",
+	    "url": "https://www.ultraimg.com/api/1/upload",
 	    "post_file": "source",
 	    "params": {
 		"key": "3374fa58c672fcaad8dab979f7687397"

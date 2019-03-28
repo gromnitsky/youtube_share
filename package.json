@@ -1,16 +1,16 @@
 {
     "name": "youtube_share",
     "private": true,
-    "version": "0.0.1-see-ext-manifest.json",
-    "main": "ext/youtube_share.js",
+    "version": "0.0.1-see-src-manifest.json",
+    "main": "src/youtube_share.js",
     "author": "Alexander Gromnitsky",
     "license": "MIT",
     "devDependencies": {
-	"chai": "~3.5.0",
-	"mocha": "~3.2.0",
-	"multiparty": "~4.1.2"
+        "chai": "~4.2.0",
+        "mocha": "~6.0.2",
+        "multiparty": "~4.2.1"
     },
     "dependencies": {
-	"nprogress": "~0.2.0"
+        "nprogress": "~0.2.0"
     }
 }

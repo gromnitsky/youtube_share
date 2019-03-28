@@ -1,6 +1,7 @@
 # youtube_share
 
-(Download the Chrome extension [here](http://gromnitsky.users.sourceforge.net/js/chrome/).)
+(Download the .crx file
+[here](http://gromnitsky.users.sourceforge.net/js/chrome/).)
 
 Usually you "share" a youtube vid via copying an iframe tag that
 Youtube provides for you.
@@ -27,11 +28,6 @@ The example above is rendered from an obvious:
 
 ## How it works
 
-In `ext` dir there is a Chrome extension that hooks into the
-context menu for links & selections.
-
-It
-
 0. Finds a vid id.
 1. Fetches the 1st video frame.
 2. Creates an in-memory canvas, puts the image onto it, draws the text
@@ -46,20 +42,14 @@ extension"--you'll get an ill version that requires additional staff
 running on your machine (like `test/imgur-server-stub`).
 
 
-## Making a custom crx
+## Compilation
 
-1. Generate a private RSA key:
+~~~
+$ npm i
+$ make crx
+~~~
 
-	`$ openssl genrsa -out private.pem 1024`
-
-2. Compile:
-
-	~~~
-	$ npm i
-	$ make crx
-	~~~
-
-& you should get `_build/youtube_share-x.y.z.crx`.
+The result should be in `_out` dir.
 
 
 ## License

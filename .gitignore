@@ -1,5 +1,2 @@
-.ph
-node_modules
-_build
 private.pem
-ext/vendor
+_out

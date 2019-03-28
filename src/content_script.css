@@ -1,0 +1,20 @@
+/* youtube 'masthead' has z-index: 1999999999 */
+#nprogress .spinner {
+  z-index: 2999999999;
+}
+#nprogress .bar {
+  z-index: 2999999999;
+}
+
+/* make it red, in #29d stead */
+#nprogress .bar {
+  background: red;
+  height: 4px;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px red, 0 0 5px red;
+}
+#nprogress .spinner-icon {
+  border-top-color: red;
+  border-left-color: red;
+}

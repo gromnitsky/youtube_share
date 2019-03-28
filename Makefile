@@ -1,43 +1,36 @@
-.DELETE_ON_ERROR:
+out := _out
+crx := $(out)/$(shell json -d- -a name version < src/manifest.json).crx
+ext := $(out)/ext
 
-pp-%:
-	@echo "$(strip $($*))" | tr ' ' \\n
-
-out := _build
-pkg.name := youtube_share-$(shell json < ext/manifest.json version)
-
-.PHONY: compile
+compile.all :=
 compile:
 
-mkdir = @mkdir -p $(dir $@)
-npm-get = $(foreach src,$(1),$(wildcard node_modules/$(src)))
+ext.src := $(wildcard src/*)
+ext.dest := $(patsubst src/%, $(ext)/%, $(ext.src))
 
+$(ext.dest): $(ext)/%: src/%; $(copy)
+$(ext)/vendor/%: node_modules/%; $(copy)
 
-# all the deps target
+compile.all += $(ext.dest) $(ext)/vendor/nprogress/nprogress.js \
+	$(ext)/vendor/nprogress/nprogress.css
 
-ext.src := $(wildcard ext/*)
-npm.src := nprogress/nprogress.*
-deps.src := $(call npm-get,$(npm.src))
-deps.dest := $(patsubst node_modules/%, ext/vendor/%, $(deps.src))
+compile: $(compile.all)
 
-$(deps.dest): ext/vendor/%: node_modules/%
-	$(mkdir)
-	cp $< $@
+crx: $(crx)
+$(crx): private.pem $(compile.all)
+	google-chrome --pack-extension=$(out)/ext --pack-extension-key=$<
+	mv $(out)/ext.crx $@
 
-compile: $(deps.dest)
+private.pem:
+	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out $@
 
-# crx generation
+define copy =
+@mkdir -p $(dir $@)
+cp $< $@
+endef
 
-.PHONY: crx
-crx: $(out)/$(pkg.name).crx
-
-$(out)/$(pkg.name).zip: $(ext.src) $(deps.dest)
-	$(mkdir)
-	cd $(dir $<) && zip -qr $(CURDIR)/$@ *
-
-%.crx: %.zip private.pem
-	./zip2crx.sh $< private.pem
-
+upload: $(crx)
+	scp $< gromnitsky@web.sourceforge.net:/home/user-web/gromnitsky/htdocs/js/chrome/
 
 # for tests
 
@@ -48,15 +41,3 @@ server: kill
 .PHONY: kill
 kill:
 	-pkill -f 'node test/imgur-server-stub'
-
-
-.PHONY: clean
-clean:
-	rm -rf $(out) ext/vendor
-
-
-# sf
-
-.PHONY: upload
-upload:
-	scp $(out)/$(pkg.name).crx gromnitsky@web.sourceforge.net:/home/user-web/gromnitsky/htdocs/js/chrome/

@@ -1,6 +1,8 @@
 out := _out
-crx := $(out)/$(shell json -d- -a name version < src/manifest.json).crx
 ext := $(out)/ext
+pkg := $(out)/$(shell json -d- -a name version < src/manifest.json)
+crx := $(pkg).crx
+zip := $(pkg).zip
 
 compile.all :=
 compile:
@@ -20,6 +22,10 @@ crx: $(crx)
 $(crx): private.pem $(compile.all)
 	google-chrome --pack-extension=$(out)/ext --pack-extension-key=$<
 	mv $(out)/ext.crx $@
+
+zip: $(zip)
+$(zip): $(compile.all)
+	cd $(dir $<) && zip -qr $(CURDIR)/$@ *
 
 private.pem:
 	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out $@
